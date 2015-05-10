@@ -1,6 +1,6 @@
 int hitNum = 0;
 int score = 0;
-int NUM_LIVES = 1;
+int NUM_LIVES = 5;
 int lives = 0;
 int numRobots = 0;
 int screenWidth = 800;
