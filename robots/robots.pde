@@ -37,6 +37,8 @@ int timeX;
 int timeY;
 int takeAwayNum = 37;
 boolean newHighScore = false;
+int pauseTime;
+int unPauseTime;
 
 
 
@@ -381,8 +383,19 @@ int randomInt(int start, int end) {
 
 void keyPressed() { 
   if (key == 'p' || key == 'P') {
-    if (looping) noLoop();
-    else loop();
+    if (looping) {
+    pauseTime = currentSeconds();
+    println("startTime = " + startTime + ", Pause Time = " + pauseTime);
+      println("Paused");
+      noLoop();
+    } else {
+    println("startTime = " + startTime + ", Pause Time = " + pauseTime);
+      loop();
+      unPauseTime = currentSeconds();
+      println("startTime = " + startTime + ", Un Pause Time " + unPauseTime);
+      startTime = startTime + (unPauseTime - pauseTime);
+      println("startTime = " + startTime);
+    }
   }  
   if (key == 's' || key == 'S') {
     exit();
@@ -533,13 +546,14 @@ void startup() {
   fill(textFill/4, textFill/4, textFill/4);
   text("To highscore : " + nf(oldScore - score, 6), toHighScoreX, toHighScoreY);
   gameArea(areaBorder, areaBorder, areaWidth, areaHeight);
-  println("scorex " + scoreX + " scorey " + scoreY);
-  println("livesX " + livesX + " livesY " + livesY);
-  println("instructionsAX " + instructionsAX + " instructionsAY " + instructionsAY);
-  println("bulletsLeftX " + bulletsLeftX + " bulletsLeftY " + bulletsLeftY);
-  println("robotsOnScreenX " + robotsOnScreenX + " robotsOnScreenY " + robotsOnScreenY);
-  println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
-  println("timeX " + timeX + " timeY " + timeY);
-  println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
+  /* println("scorex " + scoreX + " scorey " + scoreY);
+   println("livesX " + livesX + " livesY " + livesY);
+   println("instructionsAX " + instructionsAX + " instructionsAY " + instructionsAY);
+   println("bulletsLeftX " + bulletsLeftX + " bulletsLeftY " + bulletsLeftY);
+   println("robotsOnScreenX " + robotsOnScreenX + " robotsOnScreenY " + robotsOnScreenY);
+   println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
+   println("timeX " + timeX + " timeY " + timeY);
+   println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
+   */
 }
 
