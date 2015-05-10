@@ -489,7 +489,7 @@ void initialize() {
   score = 0;
   scoreX = 10;
   scoreY = 15;
-  toHighScoreX =  (screenWidth/2) + 100;
+  toHighScoreX =  (screenWidth/2) + 65;
   toHighScoreY = screenHeight - 5;
   instructionsAX = 120;
   instructionsAY = 15;
@@ -498,13 +498,13 @@ void initialize() {
   livesX = screenWidth - 100;
   livesY = 15;
   robotsPast = 0;
-  bulletsLeftX = 20;
+  bulletsLeftX = 50;
   bulletsLeftY = screenHeight - 5;
-  robotsOnScreenX = screenWidth - 150;
+  robotsOnScreenX = screenWidth - 180;
   robotsOnScreenY = screenHeight - 5;
-  robotsPastX = (screenWidth/4);
+  robotsPastX = (screenWidth/4) + 20;
   robotsPastY = screenHeight - 5;
-  timeX = (screenWidth/6) - 10;
+  timeX = (screenWidth/6) + 10;
   timeY = screenHeight - 5;
   robots = new ArrayList<Robot>();
   bullets = new ArrayList<Bullet>();
