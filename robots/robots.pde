@@ -35,7 +35,7 @@ int timeX;
 int timeY;
 int takeAwayNum = 37;
 boolean newHighScore = false;
-String pausePlayText;
+
 
 
 Shooter shooter;
@@ -353,12 +353,6 @@ void draw() {
         initialize();
         startup();
       }
-      if (key == 's' || key == 'S') {
-        pause();
-        if (key == 'p' || key == 'P') {
-          play();
-        }
-      }
     }
     showScore();
   }
@@ -381,7 +375,11 @@ int randomInt(int start, int end) {
   return int(random(start, end));
 }
 
-void keyPressed() {     
+void keyPressed() { 
+if (key == 'p' || key == 'P') {
+        if (looping) noLoop();
+        else loop();
+      }  
   if (key == CODED) {
     if (keyCode == LEFT) {
       shooter.moveLeft();
@@ -464,7 +462,6 @@ void loadHighscore() { //this is a function that loads the highscore, so we can 
 //setup 1
 
 void initialize() {
-  pausePlayText = "Press 's' to pause game";
   takeAwayNum = 37;
   newHighScore = false;
   maxBullets = 4;
@@ -474,13 +471,14 @@ void initialize() {
   scoreY = 15;
   toHighScoreX =  (screenWidth/2) +20;
   toHighScoreY = screenHeight - 5;
-  instructionsX = 150;
+  instructionsX = 120;
   instructionsY = 15;
-  livesX = (screenWidth/6);
-  livesY = screenHeight - 5;
+  livesX = screenWidth - 100;
+  livesY = 15;
   robotsPast = 0;
   bulletsLeftX = 20;
-  bulletsLeftY = screenWidth - 150;
+  bulletsLeftY = screenHeight - 5;
+  robotsOnScreenX = screenWidth - 150;
   robotsOnScreenY = screenHeight - 5;
   robotsPastX = (screenWidth/4);
   robotsPastY = screenHeight - 5;
@@ -513,7 +511,7 @@ void startup() {
   fill(textFill, 0, 0);
   text("Lives : " + lives, livesX, livesY);
   fill(0, 0, textFill);
-  text("Left arrow key = move left. Right arrow key = move right. Up arrow key = shoot. " + pausePlayText, instructionsX, instructionsY);
+  text("Left arrow key and Right arrow key = move. Up arrow key = shoot. 'P' to pause/unpause", instructionsX, instructionsY);
   fill(textFill - 25, textFill - 25, 0);
   text("Bullets left : " + (maxBullets - bullets.size()), bulletsLeftX, bulletsLeftY);
   fill(0, textFill, textFill);
@@ -534,14 +532,3 @@ void startup() {
   println("timeX " + timeX + " timeY " + timeY);
   println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
 }
-
-void pause() {
-  pausePlayText = "Press 'p' to un-pause";
-   noLoop();
-}
-
-void play() {
-  pausePlayText = "Press 's' to pause game";
-  loop();
-}
-
