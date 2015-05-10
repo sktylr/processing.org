@@ -35,6 +35,8 @@ int timeX;
 int timeY;
 int takeAwayNum = 37;
 boolean newHighScore = false;
+String pausePlayText;
+
 
 Shooter shooter;
 ArrayList<Robot> robots;
@@ -274,15 +276,15 @@ int currentSeconds() {
 void draw() {
   if (gameRunning == true) {
     /*println("scorex " + scoreX + " scorey " + scoreY);
-    println("livesX " + livesX + " livesY " + livesY);
-    println("instructionsX " + instructionsX + " instructionsY " + instructionsY);
-    println("bulletsLeftX " + bulletsLeftX + " bulletsLeftY " + bulletsLeftY);
-    println("robotsOnScreenX " + robotsOnScreenX + " robotsOnScreenY " + robotsOnScreenY);
-    println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
-    println("timeX " + timeX + " timeY " + timeY);
-    println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
-    //    println("TAKE AWAY NUM = " + takeAwayNum);
-   */ //displaying in-game stats.
+     println("livesX " + livesX + " livesY " + livesY);
+     println("instructionsX " + instructionsX + " instructionsY " + instructionsY);
+     println("bulletsLeftX " + bulletsLeftX + " bulletsLeftY " + bulletsLeftY);
+     println("robotsOnScreenX " + robotsOnScreenX + " robotsOnScreenY " + robotsOnScreenY);
+     println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
+     println("timeX " + timeX + " timeY " + timeY);
+     println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
+     //    println("TAKE AWAY NUM = " + takeAwayNum);
+     */    //displaying in-game stats.
     startup();
     //moving shooter, robots, bullets and killing 
     shooter.move();
@@ -346,10 +348,16 @@ void draw() {
   } else {
 
     if (keyPressed) {
-      // println("key pressed " + key);
+       println("key pressed " + key);
       if (key == 'r' || key == 'R') {
         initialize();
         startup();
+      }
+      if (key == 's' || key == 'S') {
+        pause();
+        if (key == 'p' || key == 'P') {
+          play();
+        }
       }
     }
     showScore();
@@ -456,6 +464,7 @@ void loadHighscore() { //this is a function that loads the highscore, so we can 
 //setup 1
 
 void initialize() {
+  pausePlayText = "Press 's' to pause game";
   takeAwayNum = 37;
   newHighScore = false;
   maxBullets = 4;
@@ -467,12 +476,11 @@ void initialize() {
   toHighScoreY = screenHeight - 5;
   instructionsX = 150;
   instructionsY = 15;
-  livesX = screenWidth - 70;
-  livesY = 15;
+  livesX = (screenWidth/6);
+  livesY = screenHeight - 5;
   robotsPast = 0;
   bulletsLeftX = 20;
-  bulletsLeftY = screenHeight - 5;
-  robotsOnScreenX = screenWidth - 150;
+  bulletsLeftY = screenWidth - 150;
   robotsOnScreenY = screenHeight - 5;
   robotsPastX = (screenWidth/4);
   robotsPastY = screenHeight - 5;
@@ -501,11 +509,11 @@ void startup() {
   textAlign(LEFT);
   background(255);
   fill(0, textFill, 0);
-  text("Score : " + nf(score, 10), scoreX, scoreY);
+  text("Score : " + nf(score, 6), scoreX, scoreY);
   fill(textFill, 0, 0);
   text("Lives : " + lives, livesX, livesY);
   fill(0, 0, textFill);
-  text("Left arrow key = move left. Right arrow key = move right. Up arrow key = shoot.", instructionsX, instructionsY);
+  text("Left arrow key = move left. Right arrow key = move right. Up arrow key = shoot. " + pausePlayText, instructionsX, instructionsY);
   fill(textFill - 25, textFill - 25, 0);
   text("Bullets left : " + (maxBullets - bullets.size()), bulletsLeftX, bulletsLeftY);
   fill(0, textFill, textFill);
@@ -513,9 +521,9 @@ void startup() {
   fill(textFill, 0, textFill);
   text("Robots past = " + robotsPast, robotsPastX, robotsPastY);
   fill(textFill/2, 0, textFill/2);
-  text("Time : " + nf(currentSeconds() - startTime, 5), timeX, timeY);
+  text("Time : " + nf(currentSeconds() - startTime, 3), timeX, timeY);
   fill(textFill/4, textFill/4, textFill/4);
-  text("To highscore : " + nf(oldScore - score, 10), toHighScoreX, toHighScoreY);
+  text("To highscore : " + nf(oldScore - score, 6), toHighScoreX, toHighScoreY);
   gameArea(areaBorder, areaBorder, areaWidth, areaHeight);
   println("scorex " + scoreX + " scorey " + scoreY);
   println("livesX " + livesX + " livesY " + livesY);
@@ -525,5 +533,15 @@ void startup() {
   println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
   println("timeX " + timeX + " timeY " + timeY);
   println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
+}
+
+void pause() {
+  pausePlayText = "Press 'p' to un-pause";
+   noLoop();
+}
+
+void play() {
+  pausePlayText = "Press 's' to pause game";
+  loop();
 }
 
