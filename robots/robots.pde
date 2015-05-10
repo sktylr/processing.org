@@ -1,3 +1,5 @@
+int instructionsBX;
+int instructionsBY;
 int hitNum = 0;
 int score = 0;
 int NUM_LIVES = 5;
@@ -21,8 +23,8 @@ int scoreX;
 int scoreY;
 int toHighScoreX;
 int toHighScoreY;
-int instructionsX;
-int instructionsY;
+int instructionsAX;
+int instructionsAY;
 int livesX;
 int livesY;
 int bulletsLeftX;
@@ -155,7 +157,7 @@ class Robot extends MovingObject {
 
   //to check if the robot should change direction
   boolean shouldChangeDir() {
-    if (score >= (450*8)) {
+    if (score >= (250*8)) {
       if (random(0, 100) < 2) {
         takeAwayNum = 40;
         return true;
@@ -263,6 +265,8 @@ class Bullet extends MovingObject {
 }
 
 
+
+
 //main setup
 void setup() {
   initialize();
@@ -277,7 +281,7 @@ void draw() {
   if (gameRunning == true) {
     /*println("scorex " + scoreX + " scorey " + scoreY);
      println("livesX " + livesX + " livesY " + livesY);
-     println("instructionsX " + instructionsX + " instructionsY " + instructionsY);
+     println("instructionsAX " + instructionsAX + " instructionsAY " + instructionsAY);
      println("bulletsLeftX " + bulletsLeftX + " bulletsLeftY " + bulletsLeftY);
      println("robotsOnScreenX " + robotsOnScreenX + " robotsOnScreenY " + robotsOnScreenY);
      println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
@@ -348,7 +352,7 @@ void draw() {
   } else {
 
     if (keyPressed) {
-       println("key pressed " + key);
+      println("key pressed " + key);
       if (key == 'r' || key == 'R') {
         initialize();
         startup();
@@ -376,10 +380,13 @@ int randomInt(int start, int end) {
 }
 
 void keyPressed() { 
-if (key == 'p' || key == 'P') {
-        if (looping) noLoop();
-        else loop();
-      }  
+  if (key == 'p' || key == 'P') {
+    if (looping) noLoop();
+    else loop();
+  }  
+  if (key == 's' || key == 'S') {
+    exit();
+  }
   if (key == CODED) {
     if (keyCode == LEFT) {
       shooter.moveLeft();
@@ -469,10 +476,12 @@ void initialize() {
   score = 0;
   scoreX = 10;
   scoreY = 15;
-  toHighScoreX =  (screenWidth/2) +20;
+  toHighScoreX =  (screenWidth/2) + 100;
   toHighScoreY = screenHeight - 5;
-  instructionsX = 120;
-  instructionsY = 15;
+  instructionsAX = 120;
+  instructionsAY = 15;
+  instructionsBX = (screenWidth/2) - 60;
+  instructionsBY = screenHeight - 5;
   livesX = screenWidth - 100;
   livesY = 15;
   robotsPast = 0;
@@ -482,7 +491,7 @@ void initialize() {
   robotsOnScreenY = screenHeight - 5;
   robotsPastX = (screenWidth/4);
   robotsPastY = screenHeight - 5;
-  timeX = (screenWidth/2) - 70;
+  timeX = (screenWidth/6) - 10;
   timeY = screenHeight - 5;
   robots = new ArrayList<Robot>();
   bullets = new ArrayList<Bullet>();
@@ -511,7 +520,8 @@ void startup() {
   fill(textFill, 0, 0);
   text("Lives : " + lives, livesX, livesY);
   fill(0, 0, textFill);
-  text("Left arrow key and Right arrow key = move. Up arrow key = shoot. 'P' to pause/unpause", instructionsX, instructionsY);
+  text("Left arrow key and Right arrow key = move. Up arrow key = shoot. 'P' to pause/unpause", instructionsAX, instructionsAY);
+  text("Press 'S' to quit", instructionsBX, instructionsBY);
   fill(textFill - 25, textFill - 25, 0);
   text("Bullets left : " + (maxBullets - bullets.size()), bulletsLeftX, bulletsLeftY);
   fill(0, textFill, textFill);
@@ -525,10 +535,11 @@ void startup() {
   gameArea(areaBorder, areaBorder, areaWidth, areaHeight);
   println("scorex " + scoreX + " scorey " + scoreY);
   println("livesX " + livesX + " livesY " + livesY);
-  println("instructionsX " + instructionsX + " instructionsY " + instructionsY);
+  println("instructionsAX " + instructionsAX + " instructionsAY " + instructionsAY);
   println("bulletsLeftX " + bulletsLeftX + " bulletsLeftY " + bulletsLeftY);
   println("robotsOnScreenX " + robotsOnScreenX + " robotsOnScreenY " + robotsOnScreenY);
   println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
   println("timeX " + timeX + " timeY " + timeY);
   println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
 }
+
