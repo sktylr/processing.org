@@ -45,6 +45,7 @@ int unPauseTime;
 Shooter shooter;
 ArrayList<Robot> robots;
 ArrayList<Bullet> bullets;
+ArrayList<Explosion> explosions;
 
 //class to make things move
 class MovingObject {
@@ -146,8 +147,16 @@ class Robot extends MovingObject {
     maxBullets = maxBullets + 1;
     if (maxBullets >= 25) {
       maxBullets = 25;
-    } 
+    }
+    explode(); 
     die();
+  }
+
+  void explode() {
+    explosions.add(new Explosion(colour, this.posX, this.posY, width/2, -1, -1)); 
+    explosions.add(new Explosion(colour, this.posX + width/2, this.posY, width/2, +1, -1)); 
+    explosions.add(new Explosion(colour, this.posX, this.posY + height/2, width/2, -1, +1)); 
+    explosions.add(new Explosion(colour, this.posX + width/2, this.posY + height/2, width/2, +1, +1));
   }
 
 
@@ -266,8 +275,35 @@ class Bullet extends MovingObject {
   }
 }
 
-
-
+class Explosion extends MovingObject {
+  float xDir;
+  float yDir;
+  int numMoves;
+  int speed = 2;
+  Explosion(color c, int x, int y, int size, float xDir, float yDir) {
+    super(c, x, y, size, size); 
+    this.xDir = xDir;
+    this.yDir = yDir;
+    numMoves = 0;
+  }
+  boolean move() {
+    numMoves++;
+    posX = posX + int(xDir) * speed;
+    posY = posY + int(yDir) * speed;
+    if (numMoves % 5 ==0) {
+      width = width -  1;
+      height--;
+    }
+    if (width<= 0) {
+      die();
+    }
+    return true;
+  }
+  //to kill the explosion
+  void die() {
+    explosions.remove(this);
+  }
+}
 
 //main setup
 void setup() {
@@ -307,6 +343,10 @@ void draw() {
         bullets.remove(i);
       }
     }
+    for (int i = explosions.size () - 1; i >=0; i--) {
+      Explosion explosion = explosions.get(i);
+      explosion.move();
+    }
 
     //robot shooter collision detection
     for (int i = robots.size () - 1; i >=0; i--) {
@@ -342,6 +382,9 @@ void draw() {
     }
     for (Bullet bullet : bullets) {
       bullet.draw();
+    }
+    for (Explosion explosion : explosions) {
+      explosion.draw();
     }
     //game over
     if (lives <= 0) {
@@ -384,12 +427,12 @@ int randomInt(int start, int end) {
 void keyPressed() { 
   if (key == 'p' || key == 'P') {
     if (looping) {
-    pauseTime = currentSeconds();
-    println("startTime = " + startTime + ", Pause Time = " + pauseTime);
+      pauseTime = currentSeconds();
+      println("startTime = " + startTime + ", Pause Time = " + pauseTime);
       println("Paused");
       noLoop();
     } else {
-    println("startTime = " + startTime + ", Pause Time = " + pauseTime);
+      println("startTime = " + startTime + ", Pause Time = " + pauseTime);
       loop();
       unPauseTime = currentSeconds();
       println("startTime = " + startTime + ", Un Pause Time " + unPauseTime);
@@ -508,6 +551,7 @@ void initialize() {
   timeY = screenHeight - 5;
   robots = new ArrayList<Robot>();
   bullets = new ArrayList<Bullet>();
+  explosions = new ArrayList<Explosion>();
   color colour = randomColour();
   colour = color(255, 0, 0);
   shooter = new Shooter(colour);
