@@ -39,7 +39,7 @@ int takeAwayNum = 37;
 boolean newHighScore = false;
 int pauseTime;
 int unPauseTime;
-
+int MAX_COUNT;
 
 
 Shooter shooter;
@@ -80,7 +80,6 @@ class MovingObject {
   }
 
   void draw() {
-
     fill(colour);
     rect(posX + areaBorder, posY + areaBorder, width, height);
   }
@@ -212,55 +211,81 @@ class Robot extends MovingObject {
 class Shooter extends MovingObject {
   static final int w = 75;
   static final int h = 20;
+  boolean exploding = false;
+  int counter;
 
   Shooter(color c) {
     super(c, areaWidth / 2 - w / 2, areaHeight - h, w, h);
   }
-
-  //to make the shooter move left
-  void moveLeft() {
-    posX = posX - 10;
-    if (posX < (0 - width/2)) {
-      posX = (0 - width/2);
+  void draw() {
+    if (exploding == false) {
+      super.draw();
     }
   }
 
+  //to make the shooter move left
+  void moveLeft() {
+    if (exploding == false) {
+      posX = posX - 10;
+      if (posX < (0 - width/2)) {
+        posX = (0 - width/2);
+      }
+    }
+  }
 
   //to make the shooter right
   void moveRight() {
-    posX = posX + 10;
-    if ((posX + (width/2)) > areaWidth) {
-      posX = areaWidth - width/2;
+    if (exploding == false) {
+      posX = posX + 10;
+      if ((posX + (width/2)) > areaWidth) {
+        posX = areaWidth - width/2;
+      }
     }
   }
 
   //when the robot hits the shooter
   void hit(Robot robot) {
-    // println("Hit by robot " + robot);
-    robot.die();
-    explode();
-    lives = lives - 1;
-    // println("Lives = " + lives + ", Score = " + score);
+    if (exploding == false) {
+      // println("Hit by robot " + robot);
+      robot.die();
+      explode(robot);
+      lives = lives - 1;
+      // println("Lives = " + lives + ", Score = " + score);
+    }
   }
 
-  void explode() {
+  void explode(Robot robot) {
     explosions.add(new Explosion(colour, this.posX, this.posY, height, -1, 0));
     explosions.add(new Explosion(colour, (this.posX + width/2) - height/2, this.posY, height, 0, -1));
     explosions.add(new Explosion(colour, this.posX + (width - height), this.posY, height, +1, 0)); 
     explosions.add(new Explosion(colour, this.posX + height/2, this.posY, height, -1, -1));
     explosions.add(new Explosion(colour, this.posX + (width - height) - height/2, this.posY, height, +1, -1));
+    exploding = true;
+    counter = robot.width * 3;
   }
 
 
   //to make the shooter shoot
   void shoot() {
-    if (bullets.size() < maxBullets) { 
-      Bullet bullet = new Bullet(posX + (width/2), posY);
-      bullets.add(bullet);
+    if (exploding == false) {
+      if (bullets.size() < maxBullets) { 
+        Bullet bullet = new Bullet(posX + (width/2), posY);
+        bullets.add(bullet);
+      }
+      if (lives <= 0) {
+        gameOver();
+      }
     }
-    if (lives <= 0) {
-      gameOver();
+  }
+
+  boolean move() {
+    if (exploding == true) {
+      counter--;
+      if (counter <= 0) {
+        exploding = false;
+      }
     }
+    return true;
   }
 }
 
@@ -342,6 +367,7 @@ void draw() {
      println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
      //    println("TAKE AWAY NUM = " + takeAwayNum);
      */    //displaying in-game stats.
+
     startup();
     //moving shooter, robots, bullets and killing 
     shooter.move();
@@ -540,6 +566,7 @@ void loadHighscore() { //this is a function that loads the highscore, so we can 
 //setup 1
 
 void initialize() {
+  MAX_COUNT = 50;
   takeAwayNum = 37;
   newHighScore = false;
   maxBullets = 4;
