@@ -157,6 +157,10 @@ class Robot extends MovingObject {
     explosions.add(new Explosion(colour, this.posX + width/2, this.posY, width/2, +1, -1)); 
     explosions.add(new Explosion(colour, this.posX, this.posY + height/2, width/2, -1, +1)); 
     explosions.add(new Explosion(colour, this.posX + width/2, this.posY + height/2, width/2, +1, +1));
+    explosions.add(new Explosion(colour, this.posX + width/4, this.posY, width/2, 0, -1));
+    explosions.add(new Explosion(colour, this.posX + width/4, this.posY + height/2, width/2, 0, +1));
+    explosions.add(new Explosion(colour, this.posX, this.posY + height/4, width/2, -1, 0));
+    explosions.add(new Explosion(colour, this.posX + width/2, this.posY + height/4, width/2, +1, 0));
   }
 
 
@@ -234,9 +238,20 @@ class Shooter extends MovingObject {
   void hit(Robot robot) {
     // println("Hit by robot " + robot);
     robot.die();
+    explode();
     lives = lives - 1;
     // println("Lives = " + lives + ", Score = " + score);
   }
+
+  void explode() {
+    explosions.add(new Explosion(colour, this.posX, this.posY, height, -1, 0));
+    explosions.add(new Explosion(colour, (this.posX + width/2) - height/2, this.posY, height, 0, -1));
+    explosions.add(new Explosion(colour, this.posX + (width - height), this.posY, height, +1, 0)); 
+    explosions.add(new Explosion(colour, this.posX + height/2, this.posY, height, -1, -1));
+    explosions.add(new Explosion(colour, this.posX + (width - height) - height/2, this.posY, height, +1, -1));
+  }
+
+
   //to make the shooter shoot
   void shoot() {
     if (bullets.size() < maxBullets) { 
@@ -279,7 +294,7 @@ class Explosion extends MovingObject {
   float xDir;
   float yDir;
   int numMoves;
-  int speed = 2;
+  int speed = 3;
   Explosion(color c, int x, int y, int size, float xDir, float yDir) {
     super(c, x, y, size, size); 
     this.xDir = xDir;
@@ -290,7 +305,7 @@ class Explosion extends MovingObject {
     numMoves++;
     posX = posX + int(xDir) * speed;
     posY = posY + int(yDir) * speed;
-    if (numMoves % 5 ==0) {
+    if (numMoves % 3 ==0) {
       width = width -  1;
       height--;
     }
@@ -371,7 +386,7 @@ void draw() {
     //shooter creation
     shooter.draw();
     if (createNewRobot()) {
-      int size = randomInt(15, 35);
+      int size = randomInt(15, 50);
       Robot robot = new Robot(randomColour(), randomInt(0, areaWidth - size), size);
       numRobots = numRobots + 1;
       robot.setName("robot " + numRobots);
