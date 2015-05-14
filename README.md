@@ -1,5 +1,5 @@
 # processing.org
-Sample "prosseing.org" games/apps.
+Sample "processing.org" games/apps.
 ==================================
 
 Robot Shooter Game
