@@ -40,7 +40,7 @@ boolean newHighScore = false;
 int pauseTime;
 int unPauseTime;
 int MAX_COUNT;
-
+String pauseUnpaused = "";
 
 Shooter shooter;
 ArrayList<Robot> robots;
@@ -136,7 +136,7 @@ class Robot extends MovingObject {
   }
 
   //what to do when the robot is hit
-  void hit() {
+  void hit(Bullet bullet) {
     score = score + (takeAwayNum - this.width) * 10;
     hitNum = hitNum + 1; 
     maxRobot = maxRobot + 1;
@@ -147,6 +147,8 @@ class Robot extends MovingObject {
     if (maxBullets >= 25) {
       maxBullets = 25;
     }
+    bullet.explode();
+    bullet.die();
     explode(); 
     die();
   }
@@ -313,6 +315,15 @@ class Bullet extends MovingObject {
       return true;
     }
   }
+  void hit() {
+    explode();
+  }
+  void explode() {
+    explosions.add(new Explosion(colour, this.posX, this.posY, width/2, -1, -1)); 
+    explosions.add(new Explosion(colour, this.posX + width/2, this.posY, width/2, +1, -1)); 
+    explosions.add(new Explosion(colour, this.posX, this.posY + height/2, width/2, -1, +1)); 
+    explosions.add(new Explosion(colour, this.posX + width/2, this.posY + height/2, width/2, +1, +1));
+  }
 }
 
 class Explosion extends MovingObject {
@@ -403,7 +414,7 @@ void draw() {
       for (int bI = bullets.size () - 1; bI >=0; bI--) {
         Bullet bullet = bullets.get(bI);
         if (robot.colDetect(bullet) || bullet.colDetect(robot)) {
-          robot.hit();
+          robot.hit(bullet);
           bullet.die();
         }
       }
@@ -412,7 +423,7 @@ void draw() {
     //shooter creation
     shooter.draw();
     if (createNewRobot()) {
-      int size = randomInt(15, 50);
+      int size = randomInt(15, 35);
       Robot robot = new Robot(randomColour(), randomInt(0, areaWidth - size), size);
       numRobots = numRobots + 1;
       robot.setName("robot " + numRobots);
@@ -471,9 +482,15 @@ void keyPressed() {
       pauseTime = currentSeconds();
       println("startTime = " + startTime + ", Pause Time = " + pauseTime);
       println("Paused");
+      pauseUnpaused = "Paused";
+      textAlign(CENTER);
+      fill(255);
+      text("" + pauseUnpaused, screenWidth/2, 100);
+      textAlign(LEFT);
       noLoop();
     } else {
       println("startTime = " + startTime + ", Pause Time = " + pauseTime);
+      pauseUnpaused = "";
       loop();
       unPauseTime = currentSeconds();
       println("startTime = " + startTime + ", Un Pause Time " + unPauseTime);
@@ -583,7 +600,7 @@ void initialize() {
   livesX = screenWidth - 100;
   livesY = 15;
   robotsPast = 0;
-  bulletsLeftX = 50;
+  bulletsLeftX = 45;
   bulletsLeftY = screenHeight - 5;
   robotsOnScreenX = screenWidth - 180;
   robotsOnScreenY = screenHeight - 5;
@@ -612,6 +629,9 @@ void initialize() {
 //setup 2
 void startup() {
   textSize(12.5);
+  textAlign(CENTER);
+  fill(255);
+  text("" + pauseUnpaused, screenWidth/2, 100);
   textAlign(LEFT);
   background(255);
   fill(0, textFill, 0);
@@ -630,11 +650,16 @@ void startup() {
   fill(textFill/2, 0, textFill/2);
   text("Time : " + nf(currentSeconds() - startTime, 3), timeX, timeY);
   fill(textFill/4, textFill/4, textFill/4);
-  text("To highscore : " + nf(oldScore - score, 6), toHighScoreX, toHighScoreY);
+  if (oldScore - score <= 0) {
+    text("New Highscore!", toHighScoreX, toHighScoreY);
+  }
+  if (oldScore - score > 0) {
+    text("To highscore : " + nf(oldScore - score, 6), toHighScoreX, toHighScoreY);
+  }
   gameArea(areaBorder, areaBorder, areaWidth, areaHeight);
   /* println("scorex " + scoreX + " scorey " + scoreY);
    println("livesX " + livesX + " livesY " + livesY);
-   println("instructionsAX " + instructionsAX + " instructionsAY " + instructionsAY);
+   prsintln("instructionsAX " + instructionsAX + " instructionsAY " + instructionsAY);
    println("bulletsLeftX " + bulletsLeftX + " bulletsLeftY " + bulletsLeftY);
    println("robotsOnScreenX " + robotsOnScreenX + " robotsOnScreenY " + robotsOnScreenY);
    println("robotsPastX " + robotsPastX + " robotsPastY " + robotsPastY);
