@@ -41,6 +41,7 @@ int pauseTime;
 int unPauseTime;
 int MAX_COUNT;
 String pauseUnpaused = "";
+boolean paused = false;
 
 Shooter shooter;
 ArrayList<Robot> robots;
@@ -220,14 +221,14 @@ class Shooter extends MovingObject {
     super(c, areaWidth / 2 - w / 2, areaHeight - h, w, h);
   }
   void draw() {
-    if (exploding == false) {
+    if (exploding == false && paused == false) {
       super.draw();
     }
   }
 
   //to make the shooter move left
   void moveLeft() {
-    if (exploding == false) {
+    if (exploding == false && paused == false) {
       posX = posX - 10;
       if (posX < (0 - width/2)) {
         posX = (0 - width/2);
@@ -237,7 +238,7 @@ class Shooter extends MovingObject {
 
   //to make the shooter right
   void moveRight() {
-    if (exploding == false) {
+    if (exploding == false && paused == false) {
       posX = posX + 10;
       if ((posX + (width/2)) > areaWidth) {
         posX = areaWidth - width/2;
@@ -247,7 +248,7 @@ class Shooter extends MovingObject {
 
   //when the robot hits the shooter
   void hit(Robot robot) {
-    if (exploding == false) {
+    if (exploding == false && paused == false) {
       // println("Hit by robot " + robot);
       robot.die();
       explode(robot);
@@ -269,7 +270,7 @@ class Shooter extends MovingObject {
 
   //to make the shooter shoot
   void shoot() {
-    if (exploding == false) {
+    if (exploding == false && paused == false) {
       if (bullets.size() < maxBullets) { 
         Bullet bullet = new Bullet(posX + (width/2), posY);
         bullets.add(bullet);
@@ -281,7 +282,7 @@ class Shooter extends MovingObject {
   }
 
   boolean move() {
-    if (exploding == true) {
+    if (exploding == false && paused == false) {
       counter--;
       if (counter <= 0) {
         exploding = false;
@@ -479,16 +480,20 @@ int randomInt(int start, int end) {
 void keyPressed() { 
   if (key == 'p' || key == 'P') {
     if (looping) {
+      paused = true;
       pauseTime = currentSeconds();
       println("startTime = " + startTime + ", Pause Time = " + pauseTime);
       println("Paused");
       pauseUnpaused = "Paused";
       textAlign(CENTER);
       fill(255);
+      textSize(32);
       text("" + pauseUnpaused, screenWidth/2, 100);
       textAlign(LEFT);
+      textSize(12.5);
       noLoop();
     } else {
+      paused = false;
       println("startTime = " + startTime + ", Pause Time = " + pauseTime);
       pauseUnpaused = "";
       loop();
