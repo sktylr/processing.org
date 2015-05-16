@@ -2,7 +2,7 @@ int instructionsBX;
 int instructionsBY;
 int hitNum = 0;
 int score = 0;
-int NUM_LIVES = 1;
+int NUM_LIVES = 5;
 int lives = 0;
 int numRobots = 0;
 int screenWidth = 800;
@@ -45,6 +45,7 @@ boolean paused = false;
 String date = day() + "/" + month() + "/" + year();
 int level = 0;
 String name = "";
+PrintWriter output;
 
 Shooter shooter;
 ArrayList<Robot> robots;
@@ -384,6 +385,7 @@ void draw() {
      //    println("TAKE AWAY NUM = " + takeAwayNum);
      */    //displaying in-game stats.
     println("LEVEL = " + level);
+    println("OldScore = " + oldScore);
     startup();
     //moving shooter, robots, bullets and killing 
     shooter.move();
@@ -454,10 +456,12 @@ void draw() {
   } else {
 
     if (keyPressed) {
-      println("key pressed " + key);
-      if (key == 'r' || key == 'R') {
-        initialize();
-        startup();
+      if (newHighScore == false) {
+        println("key pressed " + key);
+        if (key == 'r' || key == 'R') {
+          initialize();
+          startup();
+        }
       }
     }
     showScore();
@@ -572,8 +576,8 @@ void showScore() {
   }
   if (newHighScore == false) {
     text("Press 'r' to play again", screenWidth/2, (screenHeight/2) + 140);
+    text("You reached LEVEL " + level, screenWidth/2, (screenHeight/2) + 175);
   }
-  text("You reached LEVEL " + level, screenWidth/2, (screenHeight/2) + 175);
 }
 //this is to save the highscore
 void saveHighscore() {
@@ -599,6 +603,8 @@ void loadHighscore() { //this is a function that loads the highscore, so we can 
 //setup 1
 
 void initialize() {
+  name = "";
+  output = createWriter("HighscoreLog.txt");
   MAX_COUNT = 50;
   takeAwayNum = 37;
   newHighScore = false;
@@ -690,8 +696,9 @@ void changeLevel() {
 }
 void keyReleased() {
   if (newHighScore == true) {
-    if (key == ENTER)  {
-     saveLog(); 
+    if (key == ENTER) {
+      saveLog();
+      exit();
     }
     if (key == BACKSPACE && name.length()>0) {
       name = name.substring(0, name.length() - 1);
@@ -700,7 +707,12 @@ void keyReleased() {
     }
   }
 }
-void saveLog()  {
+void saveLog() {
   String data = name + " " + score + " " + date;
-  oldScore = 1250;
+  println("Name = " + name + " score = " + score + " date = " + date);
+  output.println(data);
+  output.flush();
+  output.close();
+  oldScore = 500 * 5;
 }
+
