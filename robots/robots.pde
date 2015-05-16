@@ -2,7 +2,7 @@ int instructionsBX;
 int instructionsBY;
 int hitNum = 0;
 int score = 0;
-int NUM_LIVES = 5;
+int NUM_LIVES = 1;
 int lives = 0;
 int numRobots = 0;
 int screenWidth = 800;
@@ -42,6 +42,9 @@ int unPauseTime;
 int MAX_COUNT;
 String pauseUnpaused = "";
 boolean paused = false;
+String date = day() + "/" + month() + "/" + year();
+int level = 0;
+String name = "";
 
 Shooter shooter;
 ArrayList<Robot> robots;
@@ -282,7 +285,7 @@ class Shooter extends MovingObject {
   }
 
   boolean move() {
-    if (exploding == false && paused == false) {
+    if (paused == false) {
       counter--;
       if (counter <= 0) {
         exploding = false;
@@ -369,6 +372,7 @@ int currentSeconds() {
 
 void draw() {
   if (gameRunning == true) {
+    changeLevel();
     /*println("scorex " + scoreX + " scorey " + scoreY);
      println("livesX " + livesX + " livesY " + livesY);
      println("instructionsAX " + instructionsAX + " instructionsAY " + instructionsAY);
@@ -379,7 +383,7 @@ void draw() {
      println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
      //    println("TAKE AWAY NUM = " + takeAwayNum);
      */    //displaying in-game stats.
-
+    println("LEVEL = " + level);
     startup();
     //moving shooter, robots, bullets and killing 
     shooter.move();
@@ -479,32 +483,36 @@ int randomInt(int start, int end) {
 
 void keyPressed() { 
   if (key == 'p' || key == 'P') {
-    if (looping) {
-      paused = true;
-      pauseTime = currentSeconds();
-      println("startTime = " + startTime + ", Pause Time = " + pauseTime);
-      println("Paused");
-      pauseUnpaused = "Paused";
-      textAlign(CENTER);
-      fill(255);
-      textSize(32);
-      text("" + pauseUnpaused, screenWidth/2, 100);
-      textAlign(LEFT);
-      textSize(12.5);
-      noLoop();
-    } else {
-      paused = false;
-      println("startTime = " + startTime + ", Pause Time = " + pauseTime);
-      pauseUnpaused = "";
-      loop();
-      unPauseTime = currentSeconds();
-      println("startTime = " + startTime + ", Un Pause Time " + unPauseTime);
-      startTime = startTime + (unPauseTime - pauseTime);
-      println("startTime = " + startTime);
+    if (newHighScore == false) {
+      if (looping) {
+        paused = true;
+        pauseTime = currentSeconds();
+        println("startTime = " + startTime + ", Pause Time = " + pauseTime);
+        println("Paused");
+        pauseUnpaused = "Paused";
+        textAlign(CENTER);
+        fill(255);
+        textSize(32);
+        text("" + pauseUnpaused, screenWidth/2, 100);
+        textAlign(LEFT);
+        textSize(12.5);
+        noLoop();
+      } else {
+        paused = false;
+        println("startTime = " + startTime + ", Pause Time = " + pauseTime);
+        pauseUnpaused = "";
+        loop();
+        unPauseTime = currentSeconds();
+        println("startTime = " + startTime + ", Un Pause Time " + unPauseTime);
+        startTime = startTime + (unPauseTime - pauseTime);
+        println("startTime = " + startTime);
+      }
     }
   }  
   if (key == 's' || key == 'S') {
-    exit();
+    if (newHighScore == false) {
+      exit();
+    }
   }
   if (key == CODED) {
     if (keyCode == LEFT) {
@@ -557,12 +565,15 @@ void showScore() {
   text("You lasted for " + (endTime - startTime) + " seconds", screenWidth/2, (screenHeight/2) + 70);
   text("Your highscore is " + oldScore, screenWidth/2, (screenHeight/2) + 105);
   if (newHighScore == true) {
+    text("Please input your name: " + name, screenWidth/2, (screenHeight/2) - 105);
     text("Well done! You got a new highscore!", screenWidth/2, (screenHeight/2) + 140);
     text("Press 'r' to play again", screenWidth/2, (screenHeight/2) + 175);
+    text("You reached LEVEL " + level, screenWidth/2, (screenHeight/2) + 220);
   }
   if (newHighScore == false) {
     text("Press 'r' to play again", screenWidth/2, (screenHeight/2) + 140);
   }
+  text("You reached LEVEL " + level, screenWidth/2, (screenHeight/2) + 175);
 }
 //this is to save the highscore
 void saveHighscore() {
@@ -672,4 +683,24 @@ void startup() {
    println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
    */
 }
-
+void changeLevel() {
+  if (int(score / 250) > level) {
+    level++;
+  }
+}
+void keyReleased() {
+  if (newHighScore == true) {
+    if (key == ENTER)  {
+     saveLog(); 
+    }
+    if (key == BACKSPACE && name.length()>0) {
+      name = name.substring(0, name.length() - 1);
+    } else {
+      name += key;
+    }
+  }
+}
+void saveLog()  {
+  String data = name + " " + score + " " + date;
+  oldScore = 1250;
+}
