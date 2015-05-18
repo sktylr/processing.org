@@ -1,5 +1,10 @@
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+
+
 int instructionsBX;
 int instructionsBY;
+int size = 50;
 int hitNum = 0;
 int score = 0;
 int NUM_LIVES = 5;
@@ -45,10 +50,8 @@ boolean paused = false;
 String date = day() + "/" + month() + "/" + year();
 int level = 0;
 String name = "";
-PrintWriter output;
-BufferedReader input;
-import java.io.BufferedWriter;
-import java.io.FileWriter;
+//PrintWriter output;
+//BufferedReader input;
 String outFilename = "HighscoreLog.txt";
 
 Shooter shooter;
@@ -220,7 +223,7 @@ class Robot extends MovingObject {
 
 //a class to create the shooter
 class Shooter extends MovingObject {
-  static final int w = 75;
+  static final int w = 76;
   static final int h = 20;
   boolean exploding = false;
   int counter;
@@ -231,7 +234,30 @@ class Shooter extends MovingObject {
   void draw() {
     if (exploding == false && paused == false) {
       super.draw();
+      drawHealth();
     }
+  }
+  void drawHealth() {
+    int hX = posX + (w/2) - (5 * 10)/2 + areaBorder;
+    int hY = posY + (h/2) - (10/2) + areaBorder;
+    int hW = 50;
+    int hH = 10;
+    fill(255);
+    rect(hX, hY, hW, hH);
+    if (lives == 4 || lives == 5) {
+      fill(250, 242, 0);
+    }
+    if (lives == 3 || lives == 2) {
+      fill(250, 125, 0);
+    }
+    if (lives == 1) {
+      fill(250, 0, 0);
+    }
+    if (lives == 0) {
+      fill(0);
+    }
+    hW = lives * 10;
+    rect(hX, hY, hW, hH);
   }
 
   //to make the shooter move left
@@ -257,6 +283,7 @@ class Shooter extends MovingObject {
   //when the robot hits the shooter
   void hit(Robot robot) {
     if (exploding == false && paused == false) {
+      size--;
       // println("Hit by robot " + robot);
       robot.die();
       explode(robot);
@@ -377,7 +404,6 @@ int currentSeconds() {
 
 void draw() {
   if (gameRunning == true) {
-    println(output);
     changeLevel();
     /*println("scorex " + scoreX + " scorey " + scoreY);
      println("livesX " + livesX + " livesY " + livesY);
@@ -389,8 +415,8 @@ void draw() {
      println("toHighScoreX " + toHighScoreX + " toHighScoreY " + toHighScoreY);
      //    println("TAKE AWAY NUM = " + takeAwayNum);
      */    //displaying in-game stats.
-    println("LEVEL = " + level);
-    println("OldScore = " + oldScore);
+    //println("LEVEL = " + level);
+   // println("OldScore = " + oldScore);
     startup();
     //moving shooter, robots, bullets and killing 
     shooter.move();
@@ -480,7 +506,6 @@ color randomColour() {
 boolean createNewRobot() {
   if (random(0, 100) > 98) {
     return robots.size() < maxRobot;
-    //return true;
   } else {
     return false;
   }
@@ -491,13 +516,14 @@ int randomInt(int start, int end) {
 }
 
 void keyPressed() { 
+  if (key == 'd' || key == 'D')  {
+   lives = 0; 
+  }
   if (key == 'p' || key == 'P') {
     if (newHighScore == false) {
       if (looping) {
         paused = true;
         pauseTime = currentSeconds();
-        println("startTime = " + startTime + ", Pause Time = " + pauseTime);
-        println("Paused");
         pauseUnpaused = "Paused";
         textAlign(CENTER);
         fill(255);
@@ -508,13 +534,10 @@ void keyPressed() {
         noLoop();
       } else {
         paused = false;
-        println("startTime = " + startTime + ", Pause Time = " + pauseTime);
         pauseUnpaused = "";
         loop();
         unPauseTime = currentSeconds();
-        println("startTime = " + startTime + ", Un Pause Time " + unPauseTime);
         startTime = startTime + (unPauseTime - pauseTime);
-        println("startTime = " + startTime);
       }
     }
   }  
@@ -526,9 +549,11 @@ void keyPressed() {
   if (key == CODED) {
     if (keyCode == LEFT) {
       shooter.moveLeft();
+      //  HealthBar.moveLeft();
     }
     if (keyCode == RIGHT) {
       shooter.moveRight();
+      //HealthBar.moveRight();
     }
     if (keyCode == UP) {
       shooter.shoot();
@@ -608,9 +633,10 @@ void loadHighscore() { //this is a function that loads the highscore, so we can 
 //setup 1
 
 void initialize() {
-  input = createReader("HighscoreLog.txt");
+  //input = createReader("HighscoreLog.txt");
   name = "";
-  output = createWriter("HighscoreLog.txt");
+  size = 50;
+  //output = createWriter("HighscoreLog.txt");
   MAX_COUNT = 50;
   takeAwayNum = 37;
   newHighScore = false;
@@ -640,7 +666,7 @@ void initialize() {
   bullets = new ArrayList<Bullet>();
   explosions = new ArrayList<Explosion>();
   color colour = randomColour();
-  colour = color(255, 0, 0);
+  colour = color(10, 142, 201);
   shooter = new Shooter(colour);
   shooter.setName("shooter");
   size(screenWidth, screenHeight);
@@ -703,7 +729,7 @@ void changeLevel() {
 void keyReleased() {
   if (newHighScore == true) {
     if (key == ENTER) {
-      saveLog();
+      saveLog(name, score);
       exit();
     }
     if (key == BACKSPACE && name.length()>0) {
@@ -713,26 +739,25 @@ void keyReleased() {
     }
   }
 }
-void saveLog() {
-  String data = name + " " + score + " " + date + "\n";
-  String logInput[] = {
-    data + output 
-  };
-  println("Name = " + name + " score = " + score + " date = " + date);
-  println(output);
-  appendTextToFile(outFilename, logInput);
-  oldScore = 500 * 5;
+void saveLog(String name, int score) {
+  println("saveLog(" + name + ", " + score + ")");
+  String data = name + ", " + score + ", " + currentDate();
+  appendTextToFile(outFilename, data);
 }
-/*output.println(data + input);
- output.flush();
- output.close();*/
- void appendTextToFile(String filename, String[] text){
+  
+void appendTextToFile(String filename, String text) {
+  println("appending '"  + text + "' to " + filename);
   File f = new File(dataPath(filename));
   try {
     PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
-    output.println(text);
-    output.close();
-  }catch (IOException e){
-      e.printStackTrace();
+    out.println(text);
+    out.close();
   }
+  catch (IOException e) {
+    println("IO Exception " + e);
+    e.printStackTrace();
+  }
+}
+String currentDate()  {
+ return day() + "/" + month() + "/" + year();
 }
