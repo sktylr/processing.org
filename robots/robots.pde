@@ -416,7 +416,7 @@ void draw() {
      //    println("TAKE AWAY NUM = " + takeAwayNum);
      */    //displaying in-game stats.
     //println("LEVEL = " + level);
-   // println("OldScore = " + oldScore);
+    // println("OldScore = " + oldScore);
     startup();
     //moving shooter, robots, bullets and killing 
     shooter.move();
@@ -516,8 +516,8 @@ int randomInt(int start, int end) {
 }
 
 void keyPressed() { 
-  if (key == 'd' || key == 'D')  {
-   lives = 0; 
+  if (key == 'd' || key == 'D') {
+    lives = 0;
   }
   if (key == 'p' || key == 'P') {
     if (newHighScore == false) {
@@ -614,9 +614,7 @@ void saveHighscore() {
   if (score > oldScore) {  //if the score is greater than the old highscore
     newHighScore = true;
     oldScore = score;  //the old highscore becomes the score. It will keep updating itself
-    String newScore[] = {
-      ""+score
-    };
+     String newScore[] = {""+score};
     saveStrings("robots_score.txt", newScore); //this saves the highscore even if it didn't change
   } else newHighScore = false;
   println("Score = " + score + " OldScore = " + oldScore + " newHighScore = " + newHighScore);
@@ -744,7 +742,7 @@ void saveLog(String name, int score) {
   String data = name + ", " + score + ", " + currentDate();
   appendTextToFile(outFilename, data);
 }
-  
+
 void appendTextToFile(String filename, String text) {
   println("appending '"  + text + "' to " + filename);
   File f = new File(dataPath(filename));
@@ -758,6 +756,7 @@ void appendTextToFile(String filename, String text) {
     e.printStackTrace();
   }
 }
-String currentDate()  {
- return day() + "/" + month() + "/" + year();
+String currentDate() {
+  return day() + "/" + month() + "/" + year();
 }
+
