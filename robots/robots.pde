@@ -46,6 +46,10 @@ String date = day() + "/" + month() + "/" + year();
 int level = 0;
 String name = "";
 PrintWriter output;
+BufferedReader input;
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+String outFilename = "HighscoreLog.txt";
 
 Shooter shooter;
 ArrayList<Robot> robots;
@@ -373,6 +377,7 @@ int currentSeconds() {
 
 void draw() {
   if (gameRunning == true) {
+    println(output);
     changeLevel();
     /*println("scorex " + scoreX + " scorey " + scoreY);
      println("livesX " + livesX + " livesY " + livesY);
@@ -595,7 +600,7 @@ void saveHighscore() {
 void loadHighscore() { //this is a function that loads the highscore, so we can output it at the end
   highScore = loadStrings("robots_score.txt"); //this loads the highscore
   if (highScore != null && highScore.length > 0) {
-    oldScore = Integer.parseInt(highScore[0]);
+    oldScore = int(highScore[0]);
     //   println("oldScore = " + oldScore);
   }
 }
@@ -603,6 +608,7 @@ void loadHighscore() { //this is a function that loads the highscore, so we can 
 //setup 1
 
 void initialize() {
+  input = createReader("HighscoreLog.txt");
   name = "";
   output = createWriter("HighscoreLog.txt");
   MAX_COUNT = 50;
@@ -708,11 +714,25 @@ void keyReleased() {
   }
 }
 void saveLog() {
-  String data = name + " " + score + " " + date;
+  String data = name + " " + score + " " + date + "\n";
+  String logInput[] = {
+    data + output 
+  };
   println("Name = " + name + " score = " + score + " date = " + date);
-  output.println(data);
-  output.flush();
-  output.close();
+  println(output);
+  appendTextToFile(outFilename, logInput);
   oldScore = 500 * 5;
 }
-
+/*output.println(data + input);
+ output.flush();
+ output.close();*/
+ void appendTextToFile(String filename, String[] text){
+  File f = new File(dataPath(filename));
+  try {
+    PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
+    output.println(text);
+    output.close();
+  }catch (IOException e){
+      e.printStackTrace();
+  }
+}
