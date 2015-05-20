@@ -136,9 +136,10 @@ class SoundEffect {
   AudioPlayer player;
 
   SoundEffect(Object parent, String name) {
-    println("SoundEffect parent=" + parent + ", name=" + name);
+    //println("SoundEffect parent=" + parent + ", name=" + name);
     minim = new Minim(GAME);
     player = minim.loadFile(name + ".mp3");
+    player.setGain(-40.0);
   }
   void play() {
     player.play();
@@ -509,7 +510,7 @@ void draw() {
 
     if (keyPressed) {
       if (newHighScore == false) {
-        println("key pressed " + key);
+        //println("key pressed " + key);
         if (key == 'r' || key == 'R') {
           initialize();
           startup();
@@ -615,11 +616,11 @@ void showScore() {
   if (robotsPast != 1) {
     text(robotsPast + " robots got past you", (screenWidth/2), screenHeight/2);
   }
-  if (hitNum == 1)  {
-  text("You shot " + hitNum + " robot", (screenWidth/2), (screenHeight/2) + 35);
+  if (hitNum == 1) {
+    text("You shot " + hitNum + " robot", (screenWidth/2), (screenHeight/2) + 35);
   }
-  if (hitNum != 1)  {
-    text("You shot " + hitNum + " robots", (screenWidth/2), (screenHeight/2) + 35);  
+  if (hitNum != 1) {
+    text("You shot " + hitNum + " robots", (screenWidth/2), (screenHeight/2) + 35);
   }
   textSize(32);
   text("You lasted for " + (endTime - startTime) + " seconds", screenWidth/2, (screenHeight/2) + 70);
@@ -645,7 +646,7 @@ void saveHighscore() {
     };
     saveStrings("data/robots_score.txt", newScore); //this saves the highscore even if it didn't change
   } else newHighScore = false;
-  println("Score = " + score + " OldScore = " + oldScore + " newHighScore = " + newHighScore);
+  //println("Score = " + score + " OldScore = " + oldScore + " newHighScore = " + newHighScore);
 }
 
 void loadHighscore() { //this is a function that loads the highscore, so we can output it at the end
@@ -769,13 +770,13 @@ void keyReleased() {
   }
 }
 void saveLog(String name, int score) {
-  println("saveLog(" + name + ", " + score + date + ")");
+  //println("saveLog(" + name + ", " + score + date + ")");
   String data = name + ", " + score + ", " + currentDate();
   appendTextToFile(outFilename, data);
 }
 
 void appendTextToFile(String filename, String text) {
-  println("appending '"  + text + "' to " + filename);
+  //println("appending '"  + text + "' to " + filename);
   File f = new File(dataPath(filename));
   try {
     PrintWriter out = new PrintWriter(new BufferedWriter(new FileWriter(f, true)));
@@ -783,7 +784,7 @@ void appendTextToFile(String filename, String text) {
     out.close();
   }
   catch (IOException e) {
-    println("IO Exception " + e);
+    //println("IO Exception " + e);
     e.printStackTrace();
   }
 }
