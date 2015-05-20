@@ -1,7 +1,8 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-
-
+import ddf.minim.*;
+SoundEffect shootSound;
+SoundEffect explosionSound;
 int instructionsBX;
 int instructionsBY;
 int size = 50;
@@ -53,6 +54,8 @@ String name = "";
 //PrintWriter output;
 //BufferedReader input;
 String outFilename = "HighscoreLog.txt";
+
+Object GAME = this;
 
 Shooter shooter;
 ArrayList<Robot> robots;
@@ -128,7 +131,19 @@ class MovingObject {
   }
 }
 
+class SoundEffect {
+  Minim minim;
+  AudioPlayer player;
 
+  SoundEffect(Object parent, String name) {
+    println("SoundEffect parent=" + parent + ", name=" + name);
+    minim = new Minim(GAME);
+    player = minim.loadFile(name + ".mp3");
+  }
+  void play() {
+    player.play();
+  }
+}
 //a class to create multiple robots
 class Robot extends MovingObject {
   int speed = 1;
@@ -149,6 +164,8 @@ class Robot extends MovingObject {
 
   //what to do when the robot is hit
   void hit(Bullet bullet) {
+    SoundEffect explosionSound = new SoundEffect(this, "explosion");
+    explosionSound.play();
     score = score + (takeAwayNum - this.width) * 10;
     hitNum = hitNum + 1; 
     maxRobot = maxRobot + 1;
@@ -284,6 +301,8 @@ class Shooter extends MovingObject {
   void hit(Robot robot) {
     if (exploding == false && paused == false) {
       size--;
+      SoundEffect explosionSound = new SoundEffect(this, "explosion");
+      explosionSound.play();
       // println("Hit by robot " + robot);
       robot.die();
       explode(robot);
@@ -306,6 +325,8 @@ class Shooter extends MovingObject {
   //to make the shooter shoot
   void shoot() {
     if (exploding == false && paused == false) {
+      SoundEffect shootSound = new SoundEffect(this, "shoot");
+      shootSound.play();
       if (bullets.size() < maxBullets) { 
         Bullet bullet = new Bullet(posX + (width/2), posY);
         bullets.add(bullet);
@@ -594,7 +615,12 @@ void showScore() {
   if (robotsPast != 1) {
     text(robotsPast + " robots got past you", (screenWidth/2), screenHeight/2);
   }
-  text("You shot " + hitNum + " robots", (screenWidth/2), (screenHeight/2) + 35);
+  if (hitNum == 1)  {
+  text("You shot " + hitNum + " robot", (screenWidth/2), (screenHeight/2) + 35);
+  }
+  if (hitNum != 1)  {
+    text("You shot " + hitNum + " robots", (screenWidth/2), (screenHeight/2) + 35);  
+  }
   textSize(32);
   text("You lasted for " + (endTime - startTime) + " seconds", screenWidth/2, (screenHeight/2) + 70);
   text("Your highscore is " + oldScore, screenWidth/2, (screenHeight/2) + 105);
@@ -614,14 +640,16 @@ void saveHighscore() {
   if (score > oldScore) {  //if the score is greater than the old highscore
     newHighScore = true;
     oldScore = score;  //the old highscore becomes the score. It will keep updating itself
-     String newScore[] = {""+score};
-    saveStrings("robots_score.txt", newScore); //this saves the highscore even if it didn't change
+    String newScore[] = {
+      ""+score
+    };
+    saveStrings("data/robots_score.txt", newScore); //this saves the highscore even if it didn't change
   } else newHighScore = false;
   println("Score = " + score + " OldScore = " + oldScore + " newHighScore = " + newHighScore);
 }
 
 void loadHighscore() { //this is a function that loads the highscore, so we can output it at the end
-  highScore = loadStrings("robots_score.txt"); //this loads the highscore
+  highScore = loadStrings("data/robots_score.txt"); //this loads the highscore
   if (highScore != null && highScore.length > 0) {
     oldScore = int(highScore[0]);
     //   println("oldScore = " + oldScore);
@@ -631,6 +659,9 @@ void loadHighscore() { //this is a function that loads the highscore, so we can 
 //setup 1
 
 void initialize() {
+  hitNum = 0;
+  shootSound = new SoundEffect(this, "shoot");
+  explosionSound = new SoundEffect(this, "shoot");
   //input = createReader("HighscoreLog.txt");
   name = "";
   size = 50;
@@ -738,7 +769,7 @@ void keyReleased() {
   }
 }
 void saveLog(String name, int score) {
-  println("saveLog(" + name + ", " + score + ")");
+  println("saveLog(" + name + ", " + score + date + ")");
   String data = name + ", " + score + ", " + currentDate();
   appendTextToFile(outFilename, data);
 }
