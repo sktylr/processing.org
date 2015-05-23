@@ -302,7 +302,7 @@ class Shooter extends MovingObject {
   void hit(Robot robot) {
     if (exploding == false && paused == false) {
       size--;
-      SoundEffect explosionSound = new SoundEffect(this, "explosion");
+      SoundEffect explosionSound = new SoundEffect(this, "shooterExplosion");
       explosionSound.play();
       // println("Hit by robot " + robot);
       robot.die();
@@ -366,7 +366,7 @@ class Bullet extends MovingObject {
   }
   //to move the bullet(s)
   boolean move() {
-    posY = posY - 5;
+    posY = posY - 3;
     if (posY <= 0) {
       return false;
     } else {
@@ -426,6 +426,7 @@ int currentSeconds() {
 
 void draw() {
   if (gameRunning == true) {
+    println("Input = " + name);
     changeLevel();
     /*println("scorex " + scoreX + " scorey " + scoreY);
      println("livesX " + livesX + " livesY " + livesY);
@@ -701,7 +702,7 @@ void initialize() {
   shooter.setName("shooter");
   size(screenWidth, screenHeight);
   fill(0, 255, 0);
-  frameRate(60);
+  frameRate(90);
   loadHighscore();
   gameRunning = true;
   lives = NUM_LIVES;
