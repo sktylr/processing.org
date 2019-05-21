@@ -1,6 +1,6 @@
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import ddf.minim.*;
+import processing.sound.*;
 SoundEffect shootSound;
 SoundEffect explosionSound;
 int instructionsBX;
@@ -11,13 +11,13 @@ int score = 0;
 int NUM_LIVES = 5;
 int lives = 0;
 int numRobots = 0;
-int screenWidth = 800;
-int screenHeight = 600;
+int screenWidth2 = 800;
+int screenHeight2 = 600;
 int maxRobot = 5;
 int areaBorder = 20;
 int maxBullets = 4;
-int areaWidth = screenWidth - areaBorder * 2;
-int areaHeight = screenHeight - areaBorder * 2;
+int areaWidth = screenWidth2 - areaBorder * 2;
+int areaHeight = screenHeight2 - areaBorder * 2;
 int textFill = 190;
 int robotsPast = 0;
 String highScore[];
@@ -54,6 +54,8 @@ String name = "";
 //PrintWriter output;
 //BufferedReader input;
 String outFilename = "HighscoreLog.txt";
+PApplet pApplet; // = new PApplet();
+
 
 Object GAME = this;
 
@@ -131,18 +133,22 @@ class MovingObject {
   }
 }
 
-class SoundEffect {
-  Minim minim;
-  AudioPlayer player;
 
+class SoundEffect {
+  //Minim minim;
+  //AudioPlayer player;
+SoundFile file;
   SoundEffect(Object parent, String name) {
     //println("SoundEffect parent=" + parent + ", name=" + name);
-    minim = new Minim(GAME);
-    player = minim.loadFile(name + ".mp3");
-    player.setGain(-40.0);
+    //minim = new Minim(GAME);
+    //player = minim.loadFile(name + ".mp3");
+    //player.setGain(-40.0);
+    //String path = name + ".mp3";
+    //file = new SoundFile(pApplet, path);
   }
   void play() {
-    player.play();
+    //player.play();
+    //file.play();
   }
 }
 //a class to create multiple robots
@@ -417,6 +423,7 @@ class Explosion extends MovingObject {
 //main setup
 void setup() {
   initialize();
+  size(800, 600);
 }
 
 //to display the seconds
@@ -505,8 +512,8 @@ void draw() {
     }
 
     noStroke();
-    blocker(0, (screenHeight - areaBorder) - 100);
-    blocker(screenWidth - areaBorder, (screenHeight - areaBorder) - 100);
+    blocker(0, (screenHeight2 - areaBorder) - 100);
+    blocker(screenWidth2 - areaBorder, (screenHeight2 - areaBorder) - 100);
   } else {
 
     if (keyPressed) {
@@ -551,7 +558,7 @@ void keyPressed() {
         textAlign(CENTER);
         fill(255);
         textSize(32);
-        text("" + pauseUnpaused, screenWidth/2, 100);
+        text("" + pauseUnpaused, screenWidth2/2, 100);
         textAlign(LEFT);
         textSize(12.5);
         noLoop();
@@ -593,7 +600,7 @@ void gameArea(int x, int y, int w, int h) {
 //thing that goes on top of the shooter or bullet so that you can't see all of it
 void blocker(int x, int y) {
   fill(255);
-  rect(x, y, 20, screenHeight - (areaBorder * 2));
+  rect(x, y, 20, screenHeight2 - (areaBorder * 2));
 }
 //when the game has been lost
 void gameOver() {
@@ -606,35 +613,35 @@ void gameOver() {
 void showScore() {
   textSize(32);
   fill(255);
-  rect(0, 0, screenWidth, screenHeight);
+  rect(0, 0, screenWidth2, screenHeight2);
   textAlign(CENTER, CENTER);
   fill(204, 102, 0);
-  text("GAME OVER!", (screenWidth/2), (screenHeight/2) - 70);
-  text("You had a score of " + score, (screenWidth/2), (screenHeight/2) - 35);
+  text("GAME OVER!", (screenWidth2/2), (screenHeight2/2) - 70);
+  text("You had a score of " + score, (screenWidth2/2), (screenHeight2/2) - 35);
   if (robotsPast == 1) {
-    text(robotsPast + " robot got past you", (screenWidth/2), screenHeight/2);
+    text(robotsPast + " robot got past you", (screenWidth2/2), screenHeight2/2);
   }
   if (robotsPast != 1) {
-    text(robotsPast + " robots got past you", (screenWidth/2), screenHeight/2);
+    text(robotsPast + " robots got past you", (screenWidth2/2), screenHeight2/2);
   }
   if (hitNum == 1) {
-    text("You shot " + hitNum + " robot", (screenWidth/2), (screenHeight/2) + 35);
+    text("You shot " + hitNum + " robot", (screenWidth2/2), (screenHeight2/2) + 35);
   }
   if (hitNum != 1) {
-    text("You shot " + hitNum + " robots", (screenWidth/2), (screenHeight/2) + 35);
+    text("You shot " + hitNum + " robots", (screenWidth2/2), (screenHeight2/2) + 35);
   }
   textSize(32);
-  text("You lasted for " + (endTime - startTime) + " seconds", screenWidth/2, (screenHeight/2) + 70);
-  text("Your highscore is " + oldScore, screenWidth/2, (screenHeight/2) + 105);
+  text("You lasted for " + (endTime - startTime) + " seconds", screenWidth2/2, (screenHeight2/2) + 70);
+  text("Your highscore is " + oldScore, screenWidth2/2, (screenHeight2/2) + 105);
   if (newHighScore == true) {
-    text("Please input your name: " + name, screenWidth/2, (screenHeight/2) - 105);
-    text("Well done! You got a new highscore!", screenWidth/2, (screenHeight/2) + 140);
-    text("Press 'r' to play again", screenWidth/2, (screenHeight/2) + 175);
-    text("You reached LEVEL " + level, screenWidth/2, (screenHeight/2) + 220);
+    text("Please input your name: " + name, screenWidth2/2, (screenHeight2/2) - 105);
+    text("Well done! You got a new highscore!", screenWidth2/2, (screenHeight2/2) + 140);
+    text("Press 'r' to play again", screenWidth2/2, (screenHeight2/2) + 175);
+    text("You reached LEVEL " + level, screenWidth2/2, (screenHeight2/2) + 220);
   }
   if (newHighScore == false) {
-    text("Press 'r' to play again", screenWidth/2, (screenHeight/2) + 140);
-    text("You reached LEVEL " + level, screenWidth/2, (screenHeight/2) + 175);
+    text("Press 'r' to play again", screenWidth2/2, (screenHeight2/2) + 140);
+    text("You reached LEVEL " + level, screenWidth2/2, (screenHeight2/2) + 175);
   }
 }
 //this is to save the highscore
@@ -676,23 +683,23 @@ void initialize() {
   score = 0;
   scoreX = 10;
   scoreY = 15;
-  toHighScoreX =  (screenWidth/2) + 65;
-  toHighScoreY = screenHeight - 5;
+  toHighScoreX =  (screenWidth2/2) + 65;
+  toHighScoreY = screenHeight2 - 5;
   instructionsAX = 120;
   instructionsAY = 15;
-  instructionsBX = (screenWidth/2) - 60;
-  instructionsBY = screenHeight - 5;
-  livesX = screenWidth - 100;
+  instructionsBX = (screenWidth2/2) - 60;
+  instructionsBY = screenHeight2 - 5;
+  livesX = screenWidth2 - 100;
   livesY = 15;
   robotsPast = 0;
   bulletsLeftX = 45;
-  bulletsLeftY = screenHeight - 5;
-  robotsOnScreenX = screenWidth - 180;
-  robotsOnScreenY = screenHeight - 5;
-  robotsPastX = (screenWidth/4) + 20;
-  robotsPastY = screenHeight - 5;
-  timeX = (screenWidth/6) + 10;
-  timeY = screenHeight - 5;
+  bulletsLeftY = screenHeight2 - 5;
+  robotsOnScreenX = screenWidth2 - 180;
+  robotsOnScreenY = screenHeight2 - 5;
+  robotsPastX = (screenWidth2/4) + 20;
+  robotsPastY = screenHeight2 - 5;
+  timeX = (screenWidth2/6) + 10;
+  timeY = screenHeight2 - 5;
   robots = new ArrayList<Robot>();
   bullets = new ArrayList<Bullet>();
   explosions = new ArrayList<Explosion>();
@@ -700,7 +707,7 @@ void initialize() {
   colour = color(10, 142, 201);
   shooter = new Shooter(colour);
   shooter.setName("shooter");
-  size(screenWidth, screenHeight);
+//  size(screenWidth2, screenHeight2);
   fill(0, 255, 0);
   frameRate(90);
   loadHighscore();
@@ -716,7 +723,7 @@ void startup() {
   textSize(12.5);
   textAlign(CENTER);
   fill(255);
-  text("" + pauseUnpaused, screenWidth/2, 100);
+  text("" + pauseUnpaused, screenWidth2/2, 100);
   textAlign(LEFT);
   background(255);
   fill(0, textFill, 0);
@@ -792,4 +799,3 @@ void appendTextToFile(String filename, String text) {
 String currentDate() {
   return day() + "/" + month() + "/" + year();
 }
-
