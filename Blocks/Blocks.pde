@@ -6,6 +6,7 @@
  * ups or hindrances when broken
  */
 
+Block test;
 void settings()
 {
   size(600, 800);
@@ -14,4 +15,10 @@ void settings()
 void setup()
 {
   background(50, 50, 50);
+  test = new Block(50, 50, 255);
+}
+
+void draw()
+{
+  test.draw();
 }
