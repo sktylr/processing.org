@@ -7,6 +7,7 @@
  */
 
 Block test;
+Ball testBall;
 void settings()
 {
   size(600, 800);
@@ -16,9 +17,11 @@ void setup()
 {
   background(50, 50, 50);
   test = new Block(50, 50, 255);
+  testBall = new Ball(30, 30, color(123, 214, 190));
 }
 
 void draw()
 {
   test.draw();
+  testBall.draw();
 }
