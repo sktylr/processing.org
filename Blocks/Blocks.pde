@@ -6,22 +6,58 @@
  * ups or hindrances when broken
  */
 
-Block test;
+Block test, test2, test3;
+ArrayList<Block> breakingBlocks;
 Ball testBall;
+Paddle user1;
 void settings()
 {
-  size(600, 800);
+  size(SCREEN_WIDTH, SCREEN_HEIGHT);
 }
 
 void setup()
 {
   background(50, 50, 50);
-  test = new Block(50, 50, 255);
-  testBall = new Ball(30, 30, color(123, 214, 190));
+  test = new Block(0, 170, 255);
+  test2 = new Block(0, 370, 255);
+  test3 = new Block(0, 255, 255);
+  testBall = new Ball(30, 30, color(123, 214, 190), 255);
+  user1 = new Paddle(0, 255);
+  breakingBlocks = new ArrayList<Block>();
+  for (int i = 0; i < 15; i++)
+  {
+    //Block block = new BreakingBlock(i * 40, 150, 255);
+    //breakingBlocks.add(block);
+  }
+  breakingBlocks.add(new BreakingBlock(3 * 40, 150, 255));
+  breakingBlocks.add(new BreakingBlock(9 * 40, 150, 255));
+  breakingBlocks.add(new BreakingBlock(10 * 40, 150, 255));
 }
 
 void draw()
 {
-  test.draw();
+  background(50);
+  testBall.move();
+  user1.move();
+  //test2.collide(testBall);
+  //test3.collide(testBall);
+  user1.collide(testBall);
+  for (int i = breakingBlocks.size() - 1; i >= 0; i--)
+  {
+    Block block = breakingBlocks.get(i);
+    if (block != null)
+    {
+      block.collide(testBall);
+      block.draw();
+    }
+  }
+  //test2.draw();
+  //test3.draw();
+  //test.draw();
   testBall.draw();
+  user1.draw();
+}
+
+void reset()
+{
 }
