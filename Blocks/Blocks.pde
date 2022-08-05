@@ -46,7 +46,7 @@ void draw()
     Block block = breakingBlocks.get(i);
     if (block != null)
     {
-      block.collide(testBall);
+      block.collide3(testBall);
       block.draw();
     }
   }
