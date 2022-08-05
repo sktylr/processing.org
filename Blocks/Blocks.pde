@@ -21,17 +21,16 @@ void setup()
   test = new Block(0, 170, 255);
   test2 = new Block(0, 370, 255);
   test3 = new Block(0, 255, 255);
-  testBall = new Ball(30, 30, color(123, 214, 190), 255);
-  user1 = new Paddle(0, 255);
+  testBall = new Ball(30, 280, color(123, 214, 190), 255);
+  user1 = new Paddle(color(123, 214, 190), 255);
   breakingBlocks = new ArrayList<Block>();
+  boolean green = false;
   for (int i = 0; i < 15; i++)
   {
-    //Block block = new BreakingBlock(i * 40, 150, 255);
-    //breakingBlocks.add(block);
+    Block block = new BreakingBlock(i * 40, 150, green? color(123, 214, 190) : 255);
+    breakingBlocks.add(block);
+    green = !green;
   }
-  breakingBlocks.add(new BreakingBlock(3 * 40, 150, 255));
-  breakingBlocks.add(new BreakingBlock(9 * 40, 150, 255));
-  breakingBlocks.add(new BreakingBlock(10 * 40, 150, 255));
 }
 
 void draw()
