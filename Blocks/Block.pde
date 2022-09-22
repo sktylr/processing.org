@@ -33,90 +33,6 @@ class Block
   {
     if (ball != null)
     {
-      int ballX = ball.x();
-      int ballY = ball.y();
-      int radius = ball.radius();
-      if (ballX /*+ radius*/ >= this.x() && ballX /*- radius*/ < this.x() + this.length())
-      {
-        //println("Successful on x");
-        if (ballY + radius >= this.y() && ballY - radius < this.y() + this.height())
-        {
-          //println("Successful on y");
-          executeCollision(ball, false);
-          return true;
-        }
-      }
-    }
-    return false;
-  }
-
-  // Testing different approaches to the collision detection
-
-  public boolean collide2(Ball ball)
-  {
-    if (ball != null)
-    {
-      int ballX = ball.x();
-      int ballY = ball.y();
-      int ballRadius = ball.radius();
-      if (collideLeft(ballX, ballY, ballRadius) || collideRight(ballX, ballY, ballRadius))
-      {
-        this.executeCollision(ball, true);
-        return true;
-      } else if (collideTop(ballX, ballY, ballRadius))
-      {
-        this.executeCollision(ball, false);
-        return true;
-      }
-    }
-    return false;
-  }
-
-  // Testing different approaches to the collision detection
-
-  private boolean collideLeft(int x, int y, int radius)
-  {
-    if (x + radius >= this.x() && y + radius >= this.y() && y - radius < this.y()
-      + this.height())
-    {
-      println("TRUE ON LEFT");
-      return true;
-    }
-    return false;
-  }
-
-  // Testing different approaches to the collision detection
-
-  private boolean collideRight(int x, int y, int radius)
-  {
-    if (x - radius < this.x() + this.length() && y + radius >= this.y() && y - radius
-      < this.y() + this.height())
-    {
-      println("TRUE ON RIGHT");
-      return true;
-    }
-    return false;
-  }
-
-  // Testing different approaches to the collision detection
-
-  private boolean collideTop(int x, int y, int radius)
-  {
-    if (x >= this.x() && x < this.x() + this.length() && y + radius >= this.y() &&
-      y - radius < this.y()  + this.height())
-    {
-      println("TRUE ON TOP");
-      return true;
-    }
-    return false;
-  }
-
-  // Testing different collision detection techniques
-
-  public boolean collide3(Ball ball)
-  {
-    if (ball != null)
-    {
       if (ball.x() + ball.radius() >= this.x() && ball.x() - ball.radius() < this.x()
         + this.length() && ball.y() + ball.radius() >= this.y() && ball.y() -
         ball.radius() < this.y() + this.height())
@@ -132,7 +48,6 @@ class Block
 
   protected void executeCollision(Ball ball, boolean x)
   {
-    println("Collision: " + (x? "" : "not ") + "colliding on x");
     if (ball != null)
     {
       ball.reverse(x);

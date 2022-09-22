@@ -8,11 +8,13 @@
 public class BreakingBlock extends Block
 {
   int stage;  // refers to the stage of damage the block has taken (0 == normal, 3 == dead)
+  int index;
 
-  BreakingBlock(int x, int y, color colour)
+  BreakingBlock(int x, int y, color colour, int index)
   {
     super(x, y, colour);
     stage = 0;
+    this.index = index;
   }
 
   protected void executeCollision(Ball ball, boolean x)
@@ -35,6 +37,7 @@ public class BreakingBlock extends Block
     if (stage < 2)
     {
       stage++;
+      println(index + " from left @ stage " + stage);
     } else this.die();
   }
 

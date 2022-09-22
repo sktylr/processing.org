@@ -27,7 +27,7 @@ void setup()
   boolean green = false;
   for (int i = 0; i < 15; i++)
   {
-    Block block = new BreakingBlock(i * 40, 150, green? color(123, 214, 190) : 255);
+    Block block = new BreakingBlock(i * 40, 150, green? color(123, 214, 190) : 255, i);
     breakingBlocks.add(block);
     green = !green;
   }
@@ -46,7 +46,7 @@ void draw()
     Block block = breakingBlocks.get(i);
     if (block != null)
     {
-      block.collide3(testBall);
+      block.collide(testBall);
       block.draw();
     }
   }
